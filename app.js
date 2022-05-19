@@ -28,7 +28,7 @@ db.connect((err) => {
 
 // create a Database
 function createDatabase() {
-    const sql = 'CREATE DATABASE testDB2';
+    const sql = 'CREATE DATABASE Parkville';
     db.query(sql, (err, result) => {
         if(err) throw err;
         console.log(result);
@@ -116,6 +116,9 @@ function createParkingServiceTable() {
         date_of_arrival DATETIME,
         date_of_departure DATETIME,
         PRIMARY KEY(id),
+        user_id INT(50),
+        unit_id INT(50),
+        driver_id INT(50),
         FOREIGN KEY(user_id) REFERENCES user(id),
         FOREIGN KEY(unit_id) REFERENCES unit(id),
         FOREIGN KEY(driver_id) REFERENCES driver(id),
@@ -126,6 +129,65 @@ function createParkingServiceTable() {
         } else {
             console.log(result);
             console.log('Parking service table created');
+        }
+    });
+}
+
+// CREATE A PARKING FEE TABLE
+function createParkingFeeTable() {
+    let sql = `CREATE TABLE parkingFee(
+        id INT(50) AUTO_INCREMENT,
+        unit_type VARCHAR(100),
+        duration VARCHAR(50),
+        fee INT(50),
+        PRIMARY KEY(id)
+        )`;
+    db.query(sql, (err, result) => {
+        if(err) {
+            throw err;
+        } else {
+            console.log(result);
+            console.log('Parking fee table created');
+        }
+    });
+}
+
+// create parking charge table
+function createParkingChargeTable() {
+    let sql = `CREATE TABLE parkingCharge(
+        id INT(50) AUTO_INCREMENT,
+        parking_service_id INT(50),
+        parking_fee_id INT(50),
+        FOREIGN KEY(parking_service_id) REFERENCES parkingService(id),
+        FOREIGN KEY(parking_fee_id) REFERENCES parkingF bee(id),
+        PRIMARY KEY(id)
+        )`;
+    db.query(sql, (err, result) => {
+        if(err) {
+            throw err;
+        } else {
+            console.log(result);
+            console.log('Parking charge table created');
+        }
+    });
+}
+
+// create driver table
+function createDriverTable() {
+    let sql = `CREATE TABLE driver(
+        id INT AUTO_INCREMENT,
+        name VARCHAR(100),
+        gender VARCHAR(50),
+        phone_number VARCHAR(100),
+        nin VARCHAR(100),
+        PRIMARY KEY(id)
+        )`;
+    db.query(sql, (err, result) => {
+        if(err) {
+            throw err;
+        } else {
+            console.log(result);
+            console.log('Driver table created');
         }
     });
 }
@@ -158,8 +220,9 @@ function createAllTables() {
     //createUserTable();
     //createUnitTable();cls
     //createDriverTable();
-    // * createParkingServiceTable();
+    //createParkingServiceTable();
     //createCarTyreServiceFeeTable();
+    createParkingChargeTable();
 }
 
 createAllTables();
